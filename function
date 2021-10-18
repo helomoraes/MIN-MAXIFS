@@ -1,0 +1,68 @@
+Option Explicit
+
+Public Function MINIFS(ByRef rngMin As Range, ParamArray varCriteria() As Variant) As Variant
+    Dim varResult As Variant
+    Dim i As Long
+    Dim j As Long
+    Dim varMin As Variant
+    Dim blnValid As Boolean
+
+    varMin = rngMin.Value
+    varResult = PositiveInfinity
+    If Not (UBound(varCriteria) + 1 >= 2 And (UBound(varCriteria) + 1) Mod 2 = 0) Then
+        MINIFS = "Invalid Criteria"
+        Exit Function
+    End If
+    For i = 1 To UBound(varMin)
+        If varMin(i, 1) < varResult Then
+            blnValid = True
+            For j = 0 To UBound(varCriteria) Step 2
+                If varCriteria(j).Cells(i) <> varCriteria(j + 1).Cells(1) Then
+                    blnValid = False
+                    Exit For
+                End If
+            Next j
+            If blnValid Then varResult = varMin(i, 1)
+        End If
+    Next i
+    MINIFS = varResult
+End Function
+
+Public Function MAXIFS(ByRef rngMax As Range, ParamArray varCriteria() As Variant) As Variant
+    Dim varResult As Variant
+    Dim i As Long
+    Dim j As Long
+    Dim varMax As Variant
+    Dim blnValid As Boolean
+
+    varMax = rngMax.Value
+    varResult = NegativeInfinity
+    If Not (UBound(varCriteria) + 1 >= 2 And (UBound(varCriteria) + 1) Mod 2 = 0) Then
+        MAXIFS = "Invalid Criteria"
+        Exit Function
+    End If
+
+    For i = 1 To UBound(varMax)
+        If varMax(i, 1) > varResult Then
+            blnValid = True
+            For j = 0 To UBound(varCriteria) Step 2
+                If varCriteria(j).Cells(i) <> varCriteria(j + 1).Cells(1) Then
+                    blnValid = False
+                    Exit For
+                End If
+            Next j
+            If blnValid Then varResult = varMax(i, 1)
+        End If
+    Next i
+    MAXIFS = varResult
+End Function
+
+Public Function PositiveInfinity() As Double
+    On Error Resume Next
+    PositiveInfinity = 1 / 0
+End Function
+
+Public Function NegativeInfinity() As Double
+    On Error Resume Next
+    NegativeInfinity = -1 / 0
+End Function
